@@ -1,0 +1,98 @@
+﻿@page "/TODOList"
+@using Interfaces
+@using Data
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Forms
+@rendermode InteractiveServer
+@inject ITodoListService _servise
+
+
+<h3>TodoLists</h3>
+
+<button class="btn btn-primary" @onclick="AllList">Все</button>
+<button class="btn btn-primary" @onclick="ListComplited">Выполненые</button>
+<button class="btn btn-primary" @onclick="ListActive">Активные</button>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Дата</th>
+            <th>Задача</th>
+            <th>Состояние</th>
+            <th>Дата закрытия</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var itme in nre)
+        {
+            <tr>
+                <td>@itme.Id</td>
+                <td>@itme.CreationDate</td>
+                <td>@itme.Name</td>
+                <td>
+                    @* <input type="checkbox" @bind-value="@itme.Completed" @onclick="@(e=> Complet(itme.Id))" /> *@
+                    <InputCheckbox @bind-Value="itme.Completed" @oninput="@(e=> Complet(idC:itme.Id))"></InputCheckbox>
+                </td>
+                <td>
+                    <InputDate @bind-Value="itme.ExecutionDate" @oninput="@(e=> SetDate(itme))"></InputDate>
+                </td>
+                <td>
+                    <button class="btn btn-outline-danger" @onclick="@(e=> Delete(itme.Id))">X</button>
+                </td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@code {
+    DateOnly clouth = new();
+    List<TodoList> nre { get; set; } = new();
+
+    void AllList()
+    {
+        nre = _servise.TODOListGetAll();
+    }
+    void ListComplited()
+    {
+        nre = _servise.TODOListCompliteds(true);
+    }
+
+    void ListActive()
+    {
+        nre = _servise.TODOListCompliteds(false);
+    }
+    void Complet(Guid idC)
+    {
+
+        var model = _servise.TODOListById(idC);
+        if (model.Completed == false)
+        {
+            model.Completed = true;
+            _servise.TODOListUpdated(model);
+
+            ListActive();
+
+        }
+        else
+        {
+            model.Completed = false;
+            _servise.TODOListUpdated(model);
+
+            ListComplited();
+        }
+    }
+    void Delete(Guid id)
+    {
+        _servise.TODOListDeleted(id);
+    }
+    void SetDate(TodoList mod)
+    {
+        var model = _servise.TODOListById(mod.Id);
+        model.ExecutionDate = mod.ExecutionDate;
+        _servise.TODOListUpdated(model);
+    }
+}

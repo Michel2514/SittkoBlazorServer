@@ -1,10 +1,22 @@
+using Microsoft.EntityFrameworkCore;
 using SittkoBlazorServer.Components;
+using SittkoBlazorServer.Data;
+using SittkoBlazorServer.Interfaces;
+using SittkoBlazorServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+var connectionString = builder.Configuration.GetConnectionString("TestDB");
+builder.Services.AddDbContext<TestDbContext>
+    (options => options.UseNpgsql(connectionString));
+
+builder.Services.AddTransient<ITodoListService, TodoListServices>();
+
+
 
 var app = builder.Build();
 

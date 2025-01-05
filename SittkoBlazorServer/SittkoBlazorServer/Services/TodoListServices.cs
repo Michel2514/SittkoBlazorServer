@@ -107,5 +107,12 @@ namespace SittkoBlazorServer.Services
             _db.SaveChanges();
             return true;
         }
+
+        public bool TodoListsUpdated(List<TodoList> todoLists)
+        {
+            _db.TODOLists.UpdateRange(todoLists);
+            _db.SaveChanges();
+            return true;
+        }
     }
 }

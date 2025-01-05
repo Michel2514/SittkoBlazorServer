@@ -20,5 +20,6 @@ namespace SittkoBlazorServer.Interfaces
         public TodoList TODOListById(Guid todoListId);
         public bool TODOListUpdated(TodoList todoListId);
         public bool TODOListDeleted(Guid todoListId);
+        public bool TodoListsUpdated(List<TodoList> todoLists);
     }
 }

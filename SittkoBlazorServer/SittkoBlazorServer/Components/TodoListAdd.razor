@@ -2,7 +2,7 @@
 
 @using SittkoBlazorServer.Data
 @using SittkoBlazorServer.Interfaces
-
+@rendermode InteractiveServer
 
 
 @inject ITodoListService _servise
@@ -10,45 +10,33 @@
 
 <h2>TODOList</h2>
 <div>
-    <EditForm Model="tODOList" OnValidSubmit="SaveTODOList" >
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
-        <InputDate @bind-Value="tODOList.CreationDate" class="has-validation" />
-        <InputText @bind-Value="tODOList.Name" placeholder="Задача" class="has-validation"/>
-        <button type="reset">Сохранить</button>
-        
+    <EditForm Model="todoList" OnValidSubmit="SaveTodoList">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <InputDate @bind-Value="todoList.CreationDate" class="has-validation"/>
+        <InputText @bind-Value="todoList.Name" class="has-validation"/>
     </EditForm>
-    
-   
+
+
 </div>
+
 @code {
-    TodoList tODOList = new();
-    List<TodoList> allTODOList = new();
-   
+    TodoList todoList = new();
 
     protected override void OnInitialized()
     {
-
     }
 
-    async void SaveTODOListAsync()
+    void SaveTodoList()
     {
-        var te = new TodoList
-            {
-                CreationDate = tODOList.CreationDate,
-                Name = tODOList.Name
-            };
-        var r = await _servise.TODOListCreatedAsync(te);
+        var list = new TodoList
+        {
+            CreationDate = todoList.CreationDate,
+            Name = todoList.Name
+        };
+        var r = _servise.TODOListCreated(list);
+        todoList.Name = "";
+        todoList.CreationDate = DateOnly.FromDateTime(DateTime.Now);
     }
 
-    void SaveTODOList()
-    {
-        var te = new TodoList
-            {
-                CreationDate = tODOList.CreationDate,
-                Name = tODOList.Name
-            };
-        var r = _servise.TODOListCreated(te);
-    }
-    }
+}`

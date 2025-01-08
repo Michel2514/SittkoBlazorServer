@@ -12,6 +12,7 @@
 <button class="btn btn-primary" @onclick="AllList">Все</button>
 <button class="btn btn-primary" @onclick="ListComplited">Выполненые</button>
 <button class="btn btn-primary" @onclick="ListActive">Активные</button>
+
 <table class="table">
     <thead>
         <tr>
@@ -31,11 +32,11 @@
                 <td>@item.CreationDate</td>
                 <td>@item.Name</td>
                 <td>
-                    <InputCheckbox @bind-Value="item.Completed" @onclick="SetDate"></InputCheckbox>
+                    @* <InputCheckbox @bind-Value="item.Completed" @onclick="SetDate"></InputCheckbox> *@
                 </td>
                 <td>
-                    @* <InputDate @bind-Value="item.ExecutionDate" @onchange="@(_=> SetDate(item.Id))"></InputDate> *@
-                    <InputDate @bind-Value="item.ExecutionDate" @onclick="SetDate"></InputDate>
+                    <InputDate @bind-Value="item.ExecutionDate" @onchange=""></InputDate>
+                    @* <InputDate @bind-Value="item.ExecutionDate" @onclick="SetDate"></InputDate> *@
                 </td>
                 <td>
                     @* <button class="btn btn-outline-danger" @onclick="@(e=> Delete(item.Id))">X</button> *@
@@ -49,7 +50,7 @@
 
 
 @code {
-    DateOnly clouth = new();
+
     List<TodoList> nre { get; set; } = new();
     TodoList todo { get; set; } = new();
 
@@ -90,7 +91,7 @@
     {
         _servise.TODOListDeleted(id);
     }
-    void SetDate()
+    void SetDate(Guid id)
     {        
         _servise.TodoListsUpdated(nre);
     }

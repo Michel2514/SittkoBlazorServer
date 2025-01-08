@@ -4,22 +4,22 @@ namespace SittkoBlazorServer.Interfaces
 {
     public interface ITodoListService
     {
-        public Task<bool> TODOListCreatedAsync(TodoList todoList);
-        public bool TODOListCreated(TodoList todoList);
+        Task<bool> TODOListCreatedAsync(TodoItem todoItem);
+        Task TODOListCreated(TodoItem todoItem);
 
         public Task<bool> TODOListDeletedAsync(Guid todoListId);
-        public Task<bool> TODOListUpdatedAsync(TodoList todoListId);
-        public Task<TodoList> TODOListByIdAsync(Guid todoListId);
+        public Task<bool> TODOListUpdatedAsync(TodoItem todoItemId);
+        public Task<TodoItem> TODOListByIdAsync(Guid todoListId);
 
-        public Task<List<TodoList>> TODOListGetAllAsync();
-        public List<TodoList> TODOListGetAll();
+        public Task<List<TodoItem>> TODOListGetAllAsync();
+        public List<TodoItem> TODOListGetAll();
 
-        public Task<List<TodoList>> TODOListComplitedsAsync(bool completed);
-        public Task<List<TodoList>> TODOListActives();
-        public List<TodoList> TODOListCompliteds(bool completed);
-        public TodoList TODOListById(Guid todoListId);
-        public bool TODOListUpdated(TodoList todoListId);
+        public Task<List<TodoItem>> TODOListComplitedsAsync(bool completed);
+        public Task<List<TodoItem>> TODOListActives();
+        public List<TodoItem> TODOListCompliteds(bool completed);
+        public TodoItem TODOListById(Guid todoListId);
+        public bool TODOListUpdated(TodoItem todoItemId);
         public bool TODOListDeleted(Guid todoListId);
-        public bool TodoListsUpdated(List<TodoList> todoLists);
+        public bool TodoListsUpdated(List<TodoItem> todoLists);
     }
 }

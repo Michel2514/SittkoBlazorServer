@@ -1,73 +1,59 @@
 ﻿@page "/TODOList"
+
 @using Interfaces
 @using Data
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.AspNetCore.Components.Forms
+
 @rendermode InteractiveServer
+
 @inject ITodoListService _servise
 
 
-<h3>TodoLists</h3>
-<TodoListAdd/>
+<h3>ToDo:</h3>
+<TodoListAdd />
 <button class="btn btn-primary" @onclick="AllList">Все</button>
-<button class="btn btn-primary" @onclick="ListComplited">Выполненые</button>
+<button class="btn btn-primary" @onclick="ListCompleted">Выполненые</button>
 <button class="btn btn-primary" @onclick="ListActive">Активные</button>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Дата</th>
-            <th>Задача</th>
-            <th>Состояние</th>
-            <th>Дата закрытия</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in nre)
-        {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.CreationDate</td>
-                <td>@item.Name</td>
-                <td>
-                    @* <InputCheckbox @bind-Value="item.Completed" @onclick="SetDate"></InputCheckbox> *@
-                </td>
-                <td>
-                    <InputDate @bind-Value="item.ExecutionDate" @onchange=""></InputDate>
-                    @* <InputDate @bind-Value="item.ExecutionDate" @onclick="SetDate"></InputDate> *@
-                </td>
-                <td>
-                    @* <button class="btn btn-outline-danger" @onclick="@(e=> Delete(item.Id))">X</button> *@
-                </td>
-                <td></td>
-            </tr>
-        }
-    </tbody>
-</table>
-
+<div>
+    <div>Шапка</div>
+    <TodoList TodoItems="todoItemsFiltered" TodoListService="_servise"/>
+</div>
 
 
 @code {
 
-    List<TodoList> nre { get; set; } = new();
-    TodoList todo { get; set; } = new();
+    private List<TodoItem> todoItems { get; set; } = new();
+    private List<TodoItem> todoItemsFiltered { get; set; } = new();
 
-    void AllList()
+    protected override async Task OnInitializedAsync()
     {
-        nre = _servise.TODOListGetAll();
+        await base.OnInitializedAsync();
+
+        await GetAllTodos();
+        AllList();
     }
-    void ListComplited()
+
+    private async Task GetAllTodos()
     {
-        nre = _servise.TODOListCompliteds(true);
+        todoItems = await _servise.TODOListGetAllAsync();
+    }
+    
+    private void AllList()
+    {
+         todoItemsFiltered = todoItems;
+    }
+    
+    void ListCompleted()
+    {
+        todoItemsFiltered = todoItems.Where(_ => _.Completed).ToList();
     }
 
     void ListActive()
     {
-        nre = _servise.TODOListCompliteds(false);
+        todoItemsFiltered = todoItems.Where(_ => !_.Completed).ToList();
     }
-    void Complet(TodoList mod)
+    
+    void Complete(TodoItem mod)
     {
 
         var model = _servise.TODOListById(mod.Id);
@@ -84,15 +70,17 @@
             model.Completed = false;
             _servise.TODOListUpdated(model);
 
-            ListComplited();
+            ListCompleted();
         }
     }
+    
     void Delete(Guid id)
     {
         _servise.TODOListDeleted(id);
     }
+    
     void SetDate(Guid id)
     {        
-        _servise.TodoListsUpdated(nre);
+        _servise.TodoListsUpdated(todoItems);
     }
 }

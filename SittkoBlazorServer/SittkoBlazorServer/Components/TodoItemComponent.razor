@@ -1,0 +1,20 @@
+﻿@using SittkoBlazorServer.Data
+@using SittkoBlazorServer.Interfaces
+
+<div>
+    <InputCheckbox Value="@TodoItem.Completed" ValueChanged="CompleteTask"></InputCheckbox>
+    <InputText disabled="true" Value="@TodoItem.Name"></InputText>
+</div>
+
+@code {
+    [Parameter] 
+    public TodoItem TodoItem { get; set; }
+
+    [Parameter] public ITodoListService TodoListService { get; set; }
+
+    public async Task CompleteTask()
+    {
+        await TodoListService.TODOListUpdatedAsync(TodoItem);
+    }
+    
+}

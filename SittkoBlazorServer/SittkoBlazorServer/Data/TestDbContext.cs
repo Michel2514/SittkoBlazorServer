@@ -4,7 +4,7 @@ namespace SittkoBlazorServer.Data
 {
     public class TestDbContext : DbContext
     {
-        public DbSet<TodoList> TODOLists { get; set; }
+        public DbSet<TodoItem> TodoItems { get; set; }
 
         public TestDbContext(DbContextOptions<TestDbContext> options)
         : base(options)

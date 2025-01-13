@@ -35,7 +35,7 @@
 
     private async Task GetAllTodos()
     {
-        todoItems = await _servise.TODOListGetAllAsync();
+        todoItems = await _servise.TodoListAllAsync();
     }
     
     private void AllList()
@@ -52,35 +52,5 @@
     {
         todoItemsFiltered = todoItems.Where(_ => !_.Completed).ToList();
     }
-    
-    void Complete(TodoItem mod)
-    {
 
-        var model = _servise.TODOListById(mod.Id);
-        if (model.Completed == false)
-        {
-            model.Completed = true;
-            _servise.TODOListUpdated(model);
-
-            ListActive();
-
-        }
-        else
-        {
-            model.Completed = false;
-            _servise.TODOListUpdated(model);
-
-            ListCompleted();
-        }
-    }
-    
-    void Delete(Guid id)
-    {
-        _servise.TODOListDeleted(id);
-    }
-    
-    void SetDate(Guid id)
-    {        
-        _servise.TodoListsUpdated(todoItems);
-    }
 }

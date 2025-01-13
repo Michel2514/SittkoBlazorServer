@@ -29,7 +29,7 @@
 
     private async Task SaveTodoList()
     {
-        await _servise.TODOListCreated(_todoItemComponent);
+        await _servise.TodoTaskCreateVoidAsync(_todoItemComponent);
         _todoItemComponent = new();
     }
 

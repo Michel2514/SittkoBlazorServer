@@ -17,11 +17,11 @@
 @code {
     [Parameter] 
     public EventCallback<TodoItem> OnAfterItemAdded { get; set; }
-    
-    EditForm form;
-    
+
+    EditForm form;//?
+
     TodoItem _todoItemComponent = new();
-    
+
 
     protected override void OnInitialized()
     {
@@ -30,6 +30,7 @@
     private async Task SaveTodoList()
     {
         await _servise.TodoTaskCreateVoidAsync(_todoItemComponent);
+        await OnAfterItemAdded.InvokeAsync(_todoItemComponent);
         _todoItemComponent = new();
     }
 

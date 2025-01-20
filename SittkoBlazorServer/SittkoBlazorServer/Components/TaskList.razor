@@ -9,14 +9,14 @@
 
 
 <h3>ToDo:</h3>
-<TodoListAdd />
+<TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem" />
 <button class="btn btn-primary" @onclick="AllList">Все</button>
 <button class="btn btn-primary" @onclick="ListCompleted">Выполненые</button>
 <button class="btn btn-primary" @onclick="ListActive">Активные</button>
 
 <div>
     <div>Шапка</div>
-    <TodoList TodoItems="todoItemsFiltered" TodoListService="_servise"/>
+    <TodoList TodoItems="todoItemsFiltered" TodoListService="_servise" />
 </div>
 
 
@@ -37,9 +37,21 @@
     {
         todoItems = await _servise.TodoListAllAsync();
     }
+    private async Task OnAfterAddedTaskItem(TodoItem val)
+    {
+
+            todoItems.Add(val);
+        
+            
+        if (todoItemsFiltered.FirstOrDefault().Completed == false)
+            ListActive();
+        else
+            ListCompleted();
+    }
     
     private void AllList()
     {
+        
          todoItemsFiltered = todoItems;
     }
     

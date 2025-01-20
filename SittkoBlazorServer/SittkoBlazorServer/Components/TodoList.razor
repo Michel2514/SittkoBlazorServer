@@ -5,15 +5,20 @@
 <div>
     @foreach (var item in TodoItems)
     {
-        <TodoItemComponent TodoItem="@item" TodoListService="TodoListService"/>
+        <TodoItemComponent TodoItem="@item" TodoListService="TodoListService" OnAfterItemDeleted="OnAfterDeletedTaskItem"/>
     }
 </div>
 
 @code {
     [Parameter] 
     public List<TodoItem> TodoItems { get; set; } = new();
-    
+
     [Parameter]
     public ITodoListService TodoListService { get; set; }
+
+    private async Task OnAfterDeletedTaskItem(TodoItem val)
+    {
+        TodoItems.Remove(val);
+    }
         
 }

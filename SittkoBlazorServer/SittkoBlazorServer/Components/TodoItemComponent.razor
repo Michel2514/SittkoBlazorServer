@@ -13,10 +13,14 @@
     [Parameter]
     public EventCallback<TodoItem> OnAfterItemDeleted { get; set; }
     [Parameter] public ITodoListService TodoListService { get; set; }
+    [Parameter]
+    public EventCallback<TodoItem> OnAfterItemChange { get; set; }
+
 
     public async Task CompleteTask()
     {
         await TodoListService.TodoTaskUpdateAsync(TodoItem);
+        await OnAfterItemChange.InvokeAsync(TodoItem);
     }
 
     public async Task Delete()

@@ -14,9 +14,11 @@
 <button class="btn btn-primary" @onclick="ListCompleted">Выполненые</button>
 <button class="btn btn-primary" @onclick="ListActive">Активные</button>
 
+<button class="btn btn-primary" @onclick="OnInitializedAsync">Обновить</button>
 <div>
     <div>Шапка</div>
-    <TodoList TodoItems="todoItemsFiltered" TodoListService="_servise" />
+    <TodoList TodoItems="todoItemsFiltered" TodoListService="_servise"
+              TaskListPage="taskListPage" OnAfterItemChengeInStatus="OnAfterItemChengeInStatus" />
 </div>
 
 
@@ -24,7 +26,8 @@
 
     private List<TodoItem> todoItems { get; set; } = new();
     private List<TodoItem> todoItemsFiltered { get; set; } = new();
-
+    [Parameter]
+    public TaskList taskListPage { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -37,24 +40,29 @@
     {
         todoItems = await _servise.TodoListAllAsync();
     }
+    private async Task OnAfterItemChengeInStatus(TodoItem val)
+    {
+        if (val.Completed == true)
+            ListActive();
+        else
+            ListCompleted();
+    }
     private async Task OnAfterAddedTaskItem(TodoItem val)
     {
+        todoItems.Add(val);
 
-            todoItems.Add(val);
-        
-            
         if (todoItemsFiltered.FirstOrDefault().Completed == false)
             ListActive();
         else
             ListCompleted();
     }
-    
+
     private void AllList()
     {
-        
-         todoItemsFiltered = todoItems;
+
+        todoItemsFiltered = todoItems;
     }
-    
+
     void ListCompleted()
     {
         todoItemsFiltered = todoItems.Where(_ => _.Completed).ToList();

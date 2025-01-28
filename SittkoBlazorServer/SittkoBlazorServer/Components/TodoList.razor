@@ -5,7 +5,9 @@
 <div>
     @foreach (var item in TodoItems)
     {
-        <TodoItemComponent TodoItem="@item" TodoListService="TodoListService" OnAfterItemDeleted="OnAfterDeletedTaskItem"/>
+        <TodoItemComponent TodoItem="@item" TodoListService="TodoListService"
+        OnAfterItemDeleted="OnAfterDeletedTaskItem"
+                           OnAfterItemChange="OnAfterItemChengeInStatus" />
     }
 </div>
 
@@ -15,6 +17,13 @@
 
     [Parameter]
     public ITodoListService TodoListService { get; set; }
+    [Parameter]
+    public TaskList TaskListPage{ get; set; }
+    [Parameter]
+    public EventCallback<TodoItem> OnAfterItemChengeInStatus{ get; set; }
+    // private async Task OnAfterItemChange(TodoItem val){
+        
+    // }
 
     private async Task OnAfterDeletedTaskItem(TodoItem val)
     {

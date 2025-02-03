@@ -18,7 +18,7 @@
 <div>
     <div>Шапка</div>
     <TodoList TodoItems="todoItemsFiltered" TodoListService="_servise"
-              TaskListPage="taskListPage" OnAfterItemChengeInStatus="OnAfterItemChengeInStatus" />
+              TaskListPage="taskListPage" OnAfterItemChengeInStatus="OnAfterItemChangeInStatus" />
 </div>
 
 
@@ -26,6 +26,7 @@
 
     private List<TodoItem> todoItems { get; set; } = new();
     private List<TodoItem> todoItemsFiltered { get; set; } = new();
+    private LastActiveButton lastActiveButton { get; set; }
     [Parameter]
     public TaskList taskListPage { get; set; }
     protected override async Task OnInitializedAsync()
@@ -40,37 +41,56 @@
     {
         todoItems = await _servise.TodoListAllAsync();
     }
-    private async Task OnAfterItemChengeInStatus(TodoItem val)
+
+    private async Task OnAfterItemChangeInStatus(TodoItem val)
     {
-        if (val.Completed == true)
-            ListActive();
-        else
-            ListCompleted();
+        PageActive();
     }
+
     private async Task OnAfterAddedTaskItem(TodoItem val)
     {
         todoItems.Add(val);
-
-        if (todoItemsFiltered.FirstOrDefault().Completed == false)
-            ListActive();
-        else
-            ListCompleted();
+        PageActive();
     }
 
     private void AllList()
     {
-
         todoItemsFiltered = todoItems;
+        lastActiveButton = LastActiveButton.AllList;
     }
 
     void ListCompleted()
     {
         todoItemsFiltered = todoItems.Where(_ => _.Completed).ToList();
+        lastActiveButton = LastActiveButton.ListCompleted;
     }
 
     void ListActive()
     {
         todoItemsFiltered = todoItems.Where(_ => !_.Completed).ToList();
+        lastActiveButton = LastActiveButton.ListActive;
     }
 
+    private void PageActive()
+    {
+        switch (lastActiveButton)
+        {
+            case LastActiveButton.AllList:
+                AllList();
+                break;
+            case LastActiveButton.ListCompleted:
+                ListCompleted();
+                break;
+            case LastActiveButton.ListActive:
+                ListActive();
+                break;
+        }
+    }
+
+    enum LastActiveButton
+    {
+        AllList,
+        ListCompleted,
+        ListActive
+    }
 }

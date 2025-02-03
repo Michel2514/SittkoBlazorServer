@@ -7,111 +7,60 @@ namespace SittkoBlazorServer.Services
     public class TodoListServices : ITodoListService
     {
         private readonly TestDbContext _db;
+
         public TodoListServices(TestDbContext db)
         {
             _db = db;
         }
 
-        public async Task<TodoList> TODOListByIdAsync(Guid tODOListId)
+        public async Task<TodoItem> TodoItemByIdAsync(Guid tODOListId)
         {
-            var tODOLiistById = await _db.TODOLists.FirstOrDefaultAsync(x => x.Id == tODOListId);
-            return tODOLiistById ?? new TodoList();
+            var tODOLiistById = await _db.TodoItems.FirstOrDefaultAsync(x => x.Id == tODOListId);
+            return tODOLiistById ?? new TodoItem();
         }
-        public async Task<List<TodoList>> TODOListGetAllAsync() => await _db.TODOLists.ToListAsync();
-        public List<TodoList> TODOListGetAll() => _db.TODOLists.ToList();
-        public async Task<bool> TODOListCreatedAsync(TodoList tODOList)
+
+        public async Task<List<TodoItem>> TodoListAllAsync() => await _db.TodoItems.ToListAsync();
+
+        public async Task<bool> TodoTaskCreateAsync(TodoItem tOdoItem)
         {
             try
             {
-
-                await _db.TODOLists.AddAsync(tODOList);
+                await _db.TodoItems.AddAsync(tOdoItem);
                 await _db.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
             {
-
                 return false;
             }
         }
-        public bool TODOListCreated(TodoList tODOList)
+
+        public async Task TodoTaskCreateVoidAsync(TodoItem tOdoItem)
         {
-            _db.TODOLists.Add(tODOList);
-            _db.SaveChanges();
-            return true;
+            await _db.TodoItems.AddAsync(tOdoItem);
+            await _db.SaveChangesAsync();
         }
 
-        public async Task<bool> TODOListDeletedAsync(Guid tODOListId)
+        public async Task<bool> TodoItemByIdDeleteAsync(Guid tODOListId)
         {
-            var tODOListDeletedById = await _db.TODOLists.FirstOrDefaultAsync(x => x.Id == tODOListId);
+            var tODOListDeletedById = await _db.TodoItems.FirstOrDefaultAsync(x => x.Id == tODOListId);
             if (tODOListDeletedById == null)
                 return false;
-            _db.TODOLists.Remove(tODOListDeletedById);
+            _db.TodoItems.Remove(tODOListDeletedById);
             await _db.SaveChangesAsync();
             return true;
         }
 
 
-
-        public async Task<bool> TODOListUpdatedAsync(TodoList tODOListId)
+        public async Task<bool> TodoTaskUpdateAsync(TodoItem tOdoItemId)
         {
-            var enyIdTODOList = await _db.TODOLists.FirstOrDefaultAsync
-                (x => x.Id == tODOListId.Id);
+            var enyIdTODOList = await _db.TodoItems.FirstOrDefaultAsync
+                (x => x.Id == tOdoItemId.Id);
             if (enyIdTODOList == null)
                 return false;
-            _db.TODOLists.Update(enyIdTODOList);
+            _db.TodoItems.Update(enyIdTODOList);
             await _db.SaveChangesAsync();
 
-            return true;
-        }
-
-        public Task<List<TodoList>> TODOListActives()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<TodoList>> TODOListComplitedsAsync(bool completed)
-        {
-            return await _db.TODOLists.Where(x => x.Completed == completed).ToListAsync();
-        }
-
-        public List<TodoList> TODOListCompliteds(bool completed)
-        {
-            return _db.TODOLists.Where(x => x.Completed == completed).ToList();
-        }
-
-        public TodoList TODOListById(Guid tODOListId)
-        {
-            var tODOLiistById = _db.TODOLists.FirstOrDefault(x => x.Id == tODOListId);
-            return tODOLiistById ?? new TodoList();
-        }
-
-        public bool TODOListUpdated(TodoList tODOListId)
-        {
-            var enyIdTODOList = _db.TODOLists.FirstOrDefault
-    (x => x.Id == tODOListId.Id);
-            if (enyIdTODOList == null)
-                return false;
-            _db.TODOLists.Update(enyIdTODOList);
-            _db.SaveChanges();
-
-            return true;
-        }
-
-        public bool TODOListDeleted(Guid tODOListId)
-        {
-            var tODOListDeletedById = _db.TODOLists.FirstOrDefault(x => x.Id == tODOListId);
-            if (tODOListDeletedById == null)
-                return false;
-            _db.TODOLists.Remove(tODOListDeletedById);
-            _db.SaveChanges();
-            return true;
-        }
-
-        public bool TodoListsUpdated(List<TodoList> todoLists)
-        {
-            _db.TODOLists.UpdateRange(todoLists);
-            _db.SaveChanges();
             return true;
         }
     }

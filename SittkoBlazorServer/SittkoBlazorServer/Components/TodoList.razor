@@ -1,0 +1,33 @@
+﻿
+@using SittkoBlazorServer.Data
+@using SittkoBlazorServer.Interfaces
+
+<div>
+    @foreach (var item in TodoItems)
+    {
+        <TodoItemComponent TodoItem="@item" TodoListService="TodoListService"
+        OnAfterItemDeleted="OnAfterDeletedTaskItem"
+                           OnAfterItemChange="OnAfterItemChengeInStatus" />
+    }
+</div>
+
+@code {
+    [Parameter] 
+    public List<TodoItem> TodoItems { get; set; } = new();
+
+    [Parameter]
+    public ITodoListService TodoListService { get; set; }
+    [Parameter]
+    public TaskList TaskListPage{ get; set; }
+    [Parameter]
+    public EventCallback<TodoItem> OnAfterItemChengeInStatus{ get; set; }
+    // private async Task OnAfterItemChange(TodoItem val){
+        
+    // }
+
+    private async Task OnAfterDeletedTaskItem(TodoItem val)
+    {
+        TodoItems.Remove(val);
+    }
+        
+}

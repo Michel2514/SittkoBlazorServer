@@ -14,9 +14,7 @@ var connectionString = builder.Configuration.GetConnectionString("TestDB");
 builder.Services.AddDbContext<TestDbContext>
     (options => options.UseNpgsql(connectionString));
 
-builder.Services.AddTransient<ITodoListService, TodoListServices>();
-
-
+builder.Services.AddScoped<ITodoListService, TodoListServices>();
 
 var app = builder.Build();
 

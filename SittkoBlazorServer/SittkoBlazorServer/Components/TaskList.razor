@@ -1,98 +1,96 @@
 ﻿@page "/TODOList"
+
 @using Interfaces
 @using Data
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.AspNetCore.Components.Forms
+
 @rendermode InteractiveServer
+
 @inject ITodoListService _servise
 
 
-<h3>TodoLists</h3>
-<TodoListAdd/>
+<h3>ToDo:</h3>
+<TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem" />
 <button class="btn btn-primary" @onclick="AllList">Все</button>
-<button class="btn btn-primary" @onclick="ListComplited">Выполненые</button>
+<button class="btn btn-primary" @onclick="ListCompleted">Выполненые</button>
 <button class="btn btn-primary" @onclick="ListActive">Активные</button>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Дата</th>
-            <th>Задача</th>
-            <th>Состояние</th>
-            <th>Дата закрытия</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in nre)
-        {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.CreationDate</td>
-                <td>@item.Name</td>
-                <td>
-                    @* <InputCheckbox @bind-Value="item.Completed" @onclick="SetDate"></InputCheckbox> *@
-                </td>
-                <td>
-                    <InputDate @bind-Value="item.ExecutionDate" @onchange=""></InputDate>
-                    @* <InputDate @bind-Value="item.ExecutionDate" @onclick="SetDate"></InputDate> *@
-                </td>
-                <td>
-                    <button class="btn btn-outline-danger" @onclick="@(e=> Delete(item.Id))">X</button>
-                </td>
-                <td></td>
-            </tr>
-        }
-    </tbody>
-</table>
-
+<button class="btn btn-primary" @onclick="OnInitializedAsync">Обновить</button>
+<div>
+    <div>Шапка</div>
+    <TodoList TodoItems="todoItemsFiltered" TodoListService="_servise"
+              TaskListPage="taskListPage" OnAfterItemChengeInStatus="OnAfterItemChangeInStatus" />
+</div>
 
 
 @code {
 
-    List<TodoList> nre { get; set; } = new();
-    TodoList todo { get; set; } = new();
+    private List<TodoItem> todoItems { get; set; } = new();
+    private List<TodoItem> todoItemsFiltered { get; set; } = new();
+    private LastActiveButton lastActiveButton { get; set; }
+    [Parameter]
+    public TaskList taskListPage { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
 
-    void AllList()
-    {
-        nre = _servise.TODOListGetAll();
+        await GetAllTodos();
+        AllList();
     }
-    void ListComplited()
+
+    private async Task GetAllTodos()
     {
-        nre = _servise.TODOListCompliteds(true);
+        todoItems = await _servise.TodoListAllAsync();
+    }
+
+    private async Task OnAfterItemChangeInStatus(TodoItem val)
+    {
+        PageActive();
+    }
+
+    private async Task OnAfterAddedTaskItem(TodoItem val)
+    {
+        todoItems.Add(val);
+        PageActive();
+    }
+
+    private void AllList()
+    {
+        todoItemsFiltered = todoItems;
+        lastActiveButton = LastActiveButton.AllList;
+    }
+
+    void ListCompleted()
+    {
+        todoItemsFiltered = todoItems.Where(_ => _.Completed).ToList();
+        lastActiveButton = LastActiveButton.ListCompleted;
     }
 
     void ListActive()
     {
-        nre = _servise.TODOListCompliteds(false);
+        todoItemsFiltered = todoItems.Where(_ => !_.Completed).ToList();
+        lastActiveButton = LastActiveButton.ListActive;
     }
-    void Complet(TodoList mod)
+
+    private void PageActive()
     {
-
-        var model = _servise.TODOListById(mod.Id);
-        if (model.Completed == false)
+        switch (lastActiveButton)
         {
-            model.Completed = true;
-            _servise.TODOListUpdated(model);
-
-            ListActive();
-
-        }
-        else
-        {
-            model.Completed = false;
-            _servise.TODOListUpdated(model);
-
-            ListComplited();
+            case LastActiveButton.AllList:
+                AllList();
+                break;
+            case LastActiveButton.ListCompleted:
+                ListCompleted();
+                break;
+            case LastActiveButton.ListActive:
+                ListActive();
+                break;
         }
     }
-    void Delete(Guid id)
+
+    enum LastActiveButton
     {
-        _servise.TODOListDeleted(id);
-    }
-    void SetDate(Guid id)
-    {        
-        _servise.TodoListsUpdated(nre);
+        AllList,
+        ListCompleted,
+        ListActive
     }
 }

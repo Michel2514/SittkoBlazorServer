@@ -4,39 +4,37 @@
 @using SittkoBlazorServer.Interfaces
 @rendermode InteractiveServer
 
-
 @inject ITodoListService _servise
 
-
-<h2>TODOList</h2>
 <div>
-    <EditForm Model="todoList" OnValidSubmit="SaveTodoList">
+    <EditForm @ref=form Model="_todoItemComponent" OnValidSubmit="SaveTodoList">
         <DataAnnotationsValidator/>
         <ValidationSummary/>
-        <InputDate @bind-Value="todoList.CreationDate" class="has-validation"/>
-        <InputText @bind-Value="todoList.Name" class="has-validation"/>
+        <InputText @bind-Value="_todoItemComponent.Name" class="has-validation"/>
     </EditForm>
-
-
 </div>
 
 @code {
-    TodoList todoList = new();
+    [Parameter] 
+    public EventCallback<TodoItem> OnAfterItemAdded { get; set; }
+
+    EditForm form;//?
+
+    private TodoItem _todoItemComponent = new();
+
 
     protected override void OnInitialized()
     {
     }
 
-    void SaveTodoList()
+    private async Task SaveTodoList()
     {
-        var list = new TodoList
-        {
-            CreationDate = todoList.CreationDate,
-            Name = todoList.Name
-        };
-        var r = _servise.TODOListCreated(list);
-        todoList.Name = "";
-        todoList.CreationDate = DateOnly.FromDateTime(DateTime.Now);
+        await _servise.TodoTaskCreateVoidAsync(_todoItemComponent);
+        await OnAfterItemAdded.InvokeAsync(_todoItemComponent);
+        _todoItemComponent = new();
     }
 
-}`
+    
+    
+    
+}

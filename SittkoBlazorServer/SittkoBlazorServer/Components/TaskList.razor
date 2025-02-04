@@ -15,13 +15,30 @@
         <button class="btn btn-outline-primary" @onclick="ListCompleted">Выполненые</button>
         <button class="btn btn-outline-primary" @onclick="ListActive">Активные</button>
         <button class="btn btn-outline-success" @onclick="OnInitializedAsync">Обновить</button>
-        
+
         <div class="btn-group">
-            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-secondary btn-sm dropdown-toggle" 
+                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 ...
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" type="button" @onclick="SortAlphabetically">По Алфавиту</a></li>
+                <li>
+                    <a class="dropdown-item" type="button"
+                       @onclick="SortAlphabetically">
+                        По Алфавиту
+                    </a>
+                    <a class="dropdown-item" type="button"
+                       @onclick="SortCreationDate">
+                        По Дате создания
+                    </a>
+                    @if (lastActiveButton != LastActiveButton.ListActive)
+                    {
+                        <a class="dropdown-item" type="button"
+                           @onclick="SortExecutionDate">
+                            По Дате закрытия
+                        </a>
+                    }
+                </li>
 
             </ul>
         </div>
@@ -29,10 +46,10 @@
     </div>
     <div>
         <div>Шапка</div>
-        
-        <TodoList TodoItems="todoItemsFiltered" 
+
+        <TodoList TodoItems="todoItemsFiltered"
                   TodoListService="_servise"
-                  TaskListPage="taskListPage" 
+                  TaskListPage="taskListPage"
                   OnAfterItemChengeInStatus="OnAfterItemChangeInStatus"/>
     </div>
 </div>
@@ -43,7 +60,10 @@
     private List<TodoItem> todoItemsFiltered { get; set; } = new();
     private LastActiveButton lastActiveButton { get; set; }
     [Parameter] public TaskList taskListPage { get; set; }
-    private bool OrganizeTaskByDescending { get; set; }
+
+    private bool OrganizeTaskByDescendingAlphabetically { get; set; }
+    private bool OrganizeTaskByDescendingExecutionDate { get; set; }
+    private bool OrganizeTaskByDescendingCreationDate { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -89,21 +109,53 @@
 
     private void SortAlphabetically()
     {
-        if (OrganizeTaskByDescending)
+        if (OrganizeTaskByDescendingAlphabetically)
         {
             todoItems = todoItems
                 .OrderByDescending(x => x.Name).ToList();
-            OrganizeTaskByDescending = false;
+            OrganizeTaskByDescendingAlphabetically = false;
             PageActive();
         }
         else
         {
             todoItems = todoItems.OrderBy(x => x.Name).ToList();
-            OrganizeTaskByDescending = true;
+            OrganizeTaskByDescendingAlphabetically = true;
             PageActive();
         }
     }
-        
+
+    private void SortExecutionDate()
+    {
+        if (OrganizeTaskByDescendingExecutionDate)
+        {
+            todoItems = todoItems
+                .OrderByDescending(x => x.ExecutionDate).ToList();
+            OrganizeTaskByDescendingExecutionDate = false;
+            PageActive();
+        }
+        else
+        {
+            todoItems = todoItems.OrderBy(x => x.ExecutionDate).ToList();
+            OrganizeTaskByDescendingExecutionDate = true;
+            PageActive();
+        }
+    }
+    private void SortCreationDate()
+    {
+        if (OrganizeTaskByDescendingCreationDate)
+        {
+            todoItems = todoItems
+                .OrderByDescending(x => x.CreationDate).ToList();
+            OrganizeTaskByDescendingCreationDate = false;
+            PageActive();
+        }
+        else
+        {
+            todoItems = todoItems.OrderBy(x => x.CreationDate).ToList();
+            OrganizeTaskByDescendingCreationDate = true;
+            PageActive();
+        }
+    }
 
     private void PageActive()
     {

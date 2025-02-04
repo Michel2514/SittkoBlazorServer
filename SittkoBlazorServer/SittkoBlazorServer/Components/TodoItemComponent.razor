@@ -20,6 +20,7 @@
 
     public async Task CompleteTask()
     {
+        TodoItem.ExecutionDate = DateTime.UtcNow;
         await TodoListService.TodoTaskUpdateAsync(TodoItem);
         await OnAfterItemChange.InvokeAsync(TodoItem);
     }

@@ -7,47 +7,63 @@
 
 @inject ITodoListService _servise
 
-
-<h3>ToDo:</h3>
-<TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem" />
-<button class="btn btn-primary" @onclick="AllList">Все</button>
-<button class="btn btn-primary" @onclick="ListCompleted">Выполненые</button>
-<button class="btn btn-primary" @onclick="ListActive">Активные</button>
-
-<button class="btn btn-primary" @onclick="OnInitializedAsync">Обновить</button>
 <div>
-    <div>Шапка</div>
-    <TodoList TodoItems="todoItemsFiltered" TodoListService="_servise"
-              TaskListPage="taskListPage" OnAfterItemChengeInStatus="OnAfterItemChangeInStatus" />
-</div>
+    <h3>ToDo:</h3>
+    <div>
+        <TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem"/>
+        <button class="btn btn-outline-primary" @onclick="AllList">Все</button>
+        <button class="btn btn-outline-primary" @onclick="ListCompleted">Выполненые</button>
+        <button class="btn btn-outline-primary" @onclick="ListActive">Активные</button>
+        <button class="btn btn-outline-success" @onclick="OnInitializedAsync">Обновить</button>
+        
+        <div class="btn-group">
+            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                ...
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" type="button" @onclick="SortAlphabetically">По Алфавиту</a></li>
 
+            </ul>
+        </div>
+
+    </div>
+    <div>
+        <div>Шапка</div>
+        
+        <TodoList TodoItems="todoItemsFiltered" 
+                  TodoListService="_servise"
+                  TaskListPage="taskListPage" 
+                  OnAfterItemChengeInStatus="OnAfterItemChangeInStatus"/>
+    </div>
+</div>
 
 @code {
 
     private List<TodoItem> todoItems { get; set; } = new();
     private List<TodoItem> todoItemsFiltered { get; set; } = new();
     private LastActiveButton lastActiveButton { get; set; }
-    [Parameter]
-    public TaskList taskListPage { get; set; }
+    [Parameter] public TaskList taskListPage { get; set; }
+    private bool OrganizeTaskByDescending { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         await GetAllTodos();
-        AllList();
     }
 
     private async Task GetAllTodos()
     {
         todoItems = await _servise.TodoListAllAsync();
+        PageActive();
     }
 
-    private async Task OnAfterItemChangeInStatus(TodoItem val)
+    private void OnAfterItemChangeInStatus(TodoItem val)
     {
         PageActive();
     }
 
-    private async Task OnAfterAddedTaskItem(TodoItem val)
+    private void OnAfterAddedTaskItem(TodoItem val)
     {
         todoItems.Add(val);
         PageActive();
@@ -59,17 +75,35 @@
         lastActiveButton = LastActiveButton.AllList;
     }
 
-    void ListCompleted()
+    private void ListCompleted()
     {
         todoItemsFiltered = todoItems.Where(_ => _.Completed).ToList();
         lastActiveButton = LastActiveButton.ListCompleted;
     }
 
-    void ListActive()
+    private void ListActive()
     {
         todoItemsFiltered = todoItems.Where(_ => !_.Completed).ToList();
         lastActiveButton = LastActiveButton.ListActive;
     }
+
+    private void SortAlphabetically()
+    {
+        if (OrganizeTaskByDescending)
+        {
+            todoItems = todoItems
+                .OrderByDescending(x => x.Name).ToList();
+            OrganizeTaskByDescending = false;
+            PageActive();
+        }
+        else
+        {
+            todoItems = todoItems.OrderBy(x => x.Name).ToList();
+            OrganizeTaskByDescending = true;
+            PageActive();
+        }
+    }
+        
 
     private void PageActive()
     {
@@ -87,10 +121,12 @@
         }
     }
 
-    enum LastActiveButton
+
+    private enum LastActiveButton
     {
         AllList,
         ListCompleted,
         ListActive
     }
+
 }

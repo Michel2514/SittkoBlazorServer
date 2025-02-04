@@ -10,7 +10,7 @@
     <EditForm @ref=form Model="_todoItemComponent" OnValidSubmit="SaveTodoList">
         <DataAnnotationsValidator/>
         <ValidationSummary/>
-        <InputText @bind-Value="_todoItemComponent.Name" class="has-validation"/>
+        <InputText placeholder="Задача" @bind-Value="_todoItemComponent.Name" class="has-validation" />
     </EditForm>
 </div>
 

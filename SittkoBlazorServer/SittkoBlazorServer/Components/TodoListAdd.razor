@@ -6,11 +6,11 @@
 
 @inject ITodoListService _servise
 
-<div>
-    <EditForm @ref=form Model="_todoItemComponent" OnValidSubmit="SaveTodoList">
+<div class="tre g-col-6">
+    <EditForm  @ref=form Model="_todoItemComponent" OnValidSubmit="SaveTodoList">
         <DataAnnotationsValidator/>
         <ValidationSummary/>
-        <InputText placeholder="Задача" @bind-Value="_todoItemComponent.Name" class="has-validation" />
+        <InputText placeholder="Задача" @bind-Value="_todoItemComponent.Name" spellcheck class="has-validation form-control" />
     </EditForm>
 </div>
 

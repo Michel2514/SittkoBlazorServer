@@ -2,10 +2,12 @@
 @using SittkoBlazorServer.Interfaces
 @rendermode InteractiveServer
 
-<div>
-    <InputCheckbox @bind-Value ="@TodoItem.Completed" @onclick="CompleteTask"></InputCheckbox>
-    <InputText disabled="true" @bind-Value="@TodoItem.Name"></InputText>
-    <button class="btn btn-primary" @onclick="Delete"></button>
+<div class="input-group mb-1">
+    <div class="input-group-text">
+    <InputCheckbox class="form-check-input mt-0" @bind-Value="@TodoItem.Completed" @onclick="CompleteTask"></InputCheckbox>
+    </div>
+    <InputText class="form-control" disabled="true" @bind-Value="@TodoItem.Name"></InputText>
+    <button class="btn btn-outline-secondary " @onclick="Delete">x</button>
 </div>
 
 @code {
@@ -25,9 +27,7 @@
         else
             TodoItem.ExecutionDate = DateTime.UtcNow;
 
-
         await TodoListService.TodoTaskUpdateAsync(TodoItem);
-
         await OnAfterItemChange.InvokeAsync(TodoItem);
     }
 

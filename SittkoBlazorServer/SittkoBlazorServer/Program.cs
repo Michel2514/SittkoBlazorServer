@@ -3,6 +3,7 @@ using SittkoBlazorServer.Components;
 using SittkoBlazorServer.Data;
 using SittkoBlazorServer.Interfaces;
 using SittkoBlazorServer.Services;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<TestDbContext>
     (options => options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<ITodoListService, TodoListServices>();
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 

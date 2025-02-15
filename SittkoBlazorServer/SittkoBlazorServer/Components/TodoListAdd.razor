@@ -6,20 +6,23 @@
 
 @inject ITodoListService _servise
 
-<div class="tre g-col-6">
-    <EditForm  @ref=form Model="_todoItemComponent" OnValidSubmit="SaveTodoList">
+
+ <div class="tre g-col-6">
+    <EditForm Model="_todoItemComponent" OnValidSubmit="SaveTodoList">
         <DataAnnotationsValidator/>
         <ValidationSummary/>
-        <InputText placeholder="Задача" @bind-Value="_todoItemComponent.Name" spellcheck class="has-validation form-control" />
+        <MudTextField Label="Username"
+                      @bind-Value="_todoItemComponent.Name" 
+                      For="@(() => _todoItemComponent.Name)"
+                      RequiredError="!"
+                      OnlyValidateIfDirty="true"/>
     </EditForm>
-</div>
+</div> 
+
 
 @code {
     [Parameter] 
     public EventCallback<TodoItem> OnAfterItemAdded { get; set; }
-
-    EditForm form;//?
-
     private TodoItem _todoItemComponent = new();
 
 
@@ -34,7 +37,16 @@
         _todoItemComponent = new();
     }
 
-    
+    public string Text { get; set; } = "????";
+    public string ButtonText { get; set; } = "Click Me";
+    public int ButtonClicked { get; set; }
+
+    void ButtonOnClick()
+    {
+        ButtonClicked += 1;
+        Text = $"Awesome x {ButtonClicked}";
+        ButtonText = "Click Me Again";
+    }
     
     
 }

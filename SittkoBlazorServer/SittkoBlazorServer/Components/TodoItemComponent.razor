@@ -2,14 +2,15 @@
 @using SittkoBlazorServer.Interfaces
 @rendermode InteractiveServer
 
-<div class="input-group mb-1">
-    <div class="input-group-text">
-    <InputCheckbox class="form-check-input mt-0" @bind-Value="@TodoItem.Completed" @onclick="CompleteTask"></InputCheckbox>
-    </div>
-    <InputText class="form-control" disabled="true" @bind-Value="@TodoItem.Name"></InputText>
-    <button class="btn btn-outline-secondary " @onclick="Delete">x</button>
-</div>
 
+<MudPaper Class="pa-4 mud-theme-primary form-control">
+    <MudStack StretchItems="@stretch" Row>
+        <MudCheckBox @bind-Value="@TodoItem.Completed" @onclick="CompleteTask"></MudCheckBox>
+        @* <MudTextField  disabled="true" @bind-Value="@TodoItem.Name"></MudTextField> *@
+        <p class="pa-4">@TodoItem.Name</p>
+        <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="Delete"/>
+    </MudStack>
+</MudPaper>
 @code {
     [Parameter] 
     public TodoItem TodoItem { get; set; }
@@ -18,8 +19,7 @@
     [Parameter] public ITodoListService TodoListService { get; set; }
     [Parameter]
     public EventCallback<TodoItem> OnAfterItemChange { get; set; }
-
-
+ StretchItems stretch = StretchItems.Middle;
     public async Task CompleteTask()
     {
         if (TodoItem.Completed)
@@ -30,7 +30,7 @@
         await TodoListService.TodoTaskUpdateAsync(TodoItem);
         await OnAfterItemChange.InvokeAsync(TodoItem);
     }
-
+   
     public async Task Delete()
     {
         await TodoListService.TodoItemByIdDeleteAsync(TodoItem.Id);

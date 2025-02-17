@@ -6,45 +6,18 @@
 @rendermode InteractiveServer
 
 @inject ITodoListService _servise
-
 <div>
     <div class="d-grid">
 
         <TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem"/>
-        <div class="tre d-inline-flex gap-2">
-            <button class="btn btn-link" @onclick="AllList">Все</button>
-            <button class="btn btn-link" @onclick="ListCompleted">Выполненые</button>
-            <button class="btn btn-link" @onclick="ListActive">Активные</button>
-            <button class="btn btn-link" @onclick="OnInitializedAsync">Обновить</button>
-
-            <div class="btn-group">
-                <button class="btn btn-secondary btn-sm dropdown-toggle"
-                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    ...
-                </button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" type="button"
-                           @onclick="SortAlphabetically">
-                            По Алфавиту
-                        </a>
-                        <a class="dropdown-item" type="button"
-                           @onclick="SortCreationDate">
-                            По Дате создания
-                        </a>
-                        @if (lastActiveButton != LastActiveButton.ListActive)
-                        {
-                            <a class="dropdown-item" type="button"
-                               @onclick="SortExecutionDate">
-                                По Дате закрытия
-                            </a>
-                        }
-                    </li>
-
-                </ul>
-            </div>
+        <div class="tre">
+        <MudButtonGroup Class="tre" Color="Color.Primary" Variant="Variant.Outlined">
+            <MudButton @onclick="AllList">Все</MudButton>
+            <MudButton @onclick="ListCompleted">Выполненые</MudButton>
+            <MudButton @onclick="ListActive">Активные</MudButton>
+          @*   <MudButton @onclick="OnInitializedAsync">Обновить</MudButton> *@
+        </MudButtonGroup>
         </div>
-
     </div>
     <div>
         <div class="re">
@@ -57,6 +30,8 @@
                   OnAfterItemChengeInStatus="OnAfterItemChangeInStatus"/>
     </div>
 </div>
+
+
 
 @code {
 

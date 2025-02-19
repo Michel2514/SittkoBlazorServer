@@ -7,18 +7,23 @@
 
 @inject ITodoListService _servise
 <div>
-    <div class="d-grid">
 
-        <TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem"/>
-        <div class="tre">
-        <MudButtonGroup Class="tre" Color="Color.Primary" Variant="Variant.Outlined">
-            <MudButton @onclick="AllList">Все</MudButton>
-            <MudButton @onclick="ListCompleted">Выполненые</MudButton>
-            <MudButton @onclick="ListActive">Активные</MudButton>
-          @*   <MudButton @onclick="OnInitializedAsync">Обновить</MudButton> *@
-        </MudButtonGroup>
-        </div>
-    </div>
+    <MudCard>
+        <MudCardContent Class="object-center">
+            <TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem"/>
+            <MudCardActions Class="tre">
+                <MudButtonGroup  Class="tre" Color="Color.Primary" Variant="Variant.Outlined">
+                    <MudButton @onclick="AllList">Все</MudButton>
+                    <MudButton @onclick="ListCompleted">Выполненые</MudButton>
+                    <MudButton @onclick="ListActive">Активные</MudButton>
+                    @*   <MudButton @onclick="OnInitializedAsync">Обновить</MudButton> *@
+                </MudButtonGroup>
+            </MudCardActions>
+
+        </MudCardContent>
+    </MudCard>
+    
+    
     <div>
         <div class="re">
             <h4>Список задач</h4>

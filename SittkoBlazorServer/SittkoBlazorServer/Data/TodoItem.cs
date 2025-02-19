@@ -10,5 +10,6 @@ namespace SittkoBlazorServer.Data
         [Required] public DateTime CreationDate { get; set; } = DateTime.UtcNow;
         public DateTime? ExecutionDate { get; set; }
         public bool Completed { get; set; }
+        public string? Description { get; set; }
     }
 }

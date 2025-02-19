@@ -1,15 +1,10 @@
 ﻿@page "/TodoListAdd"
-
 @using SittkoBlazorServer.Data
 @using SittkoBlazorServer.Interfaces
 @rendermode InteractiveServer
-
 @inject ITodoListService _servise
 
-
-
-
- <div class="tre g-col-6">
+<div class="tre g-col-6">
     <EditForm Model="_todoItemComponent" OnValidSubmit="SaveTodoList">
         <DataAnnotationsValidator/>
         <ValidationSummary/>
@@ -21,13 +16,6 @@
     </EditForm>
 </div> 
 
-@code {
-    StretchItems stretch = StretchItems.Start;
-    RenderFragment content = null;
-    RenderFragment rf1 = @<MudText Typo="@Typo.h6">I Am Field</MudText>;
-    string color = "#6cf014";
-}
- 
 @code {
     [Parameter] 
     public EventCallback<TodoItem> OnAfterItemAdded { get; set; }

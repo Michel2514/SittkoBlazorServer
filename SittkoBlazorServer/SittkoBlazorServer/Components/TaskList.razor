@@ -1,34 +1,39 @@
 ﻿@page "/"
-
 @using Interfaces
 @using Data
-
 @rendermode InteractiveServer
-
 @inject ITodoListService _servise
+
 <div>
+    <MudItem>
+        <MudGrid>
+            <MudCardContent Class="object-center">
+                <TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem"/>
+                <MudCardActions Class="align-center justify-center">
+                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+                        <MudButton @onclick="AllList">Все</MudButton>
+                        <MudButton @onclick="ListCompleted">Выполненые</MudButton>
+                        <MudButton @onclick="ListActive">Активные</MudButton> 
+                        
+                    </MudButtonGroup>
+                </MudCardActions>
+            </MudCardContent>
 
-    <MudCard>
-        <MudCardContent Class="object-center">
-            <TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem"/>
-            <MudCardActions Class="tre">
-                <MudButtonGroup  Class="tre" Color="Color.Primary" Variant="Variant.Outlined">
-                    <MudButton @onclick="AllList">Все</MudButton>
-                    <MudButton @onclick="ListCompleted">Выполненые</MudButton>
-                    <MudButton @onclick="ListActive">Активные</MudButton>
-                    @*   <MudButton @onclick="OnInitializedAsync">Обновить</MudButton> *@
-                </MudButtonGroup>
-            </MudCardActions>
+        </MudGrid>
 
-        </MudCardContent>
-    </MudCard>
-    
-    
+            <MudStack Class="align-center justify-center" Row="true">
+                <MudText Typo="Typo.h4" Class="re">Список задач</MudText>
+            @* <MudMenu Icon="@Icons.Material.Outlined.FilterAlt" AriaLabel="Open user menu">
+                    <MudMenuItem Label="Profile" />
+                    <MudMenuItem Label="My account" />
+                    <MudMenuItem Label="Logout" />
+                </MudMenu> *@
+            </MudStack>
+
+    </MudItem>
+   
     <div>
-        <div class="re">
-            <h4>Список задач</h4>
-        </div>
-
+        
         <TodoList TodoItems="todoItemsFiltered"
                   TodoListService="_servise"
                   TaskListPage="taskListPage"
@@ -38,16 +43,16 @@
 
 
 
-@code {
 
-    private List<TodoItem> todoItems { get; set; } = new();
+@code {
     private List<TodoItem> todoItemsFiltered { get; set; } = new();
-    private LastActiveButton lastActiveButton { get; set; }
     [Parameter] public TaskList taskListPage { get; set; }
 
-    private bool OrganizeTaskByDescendingAlphabetically { get; set; }
-    private bool OrganizeTaskByDescendingExecutionDate { get; set; }
-    private bool OrganizeTaskByDescendingCreationDate { get; set; }
+    private LastActiveButton lastActiveButton;
+    private List<TodoItem> todoItems = new();
+    private bool OrganizeTaskByDescendingAlphabetically;
+    private bool OrganizeTaskByDescendingExecutionDate;
+    private bool OrganizeTaskByDescendingCreationDate;
 
     protected override async Task OnInitializedAsync()
     {
@@ -107,7 +112,7 @@
             PageActive();
         }
     }
-
+  
     private void SortExecutionDate()
     {
         if (OrganizeTaskByDescendingExecutionDate)
@@ -158,11 +163,5 @@
         }
     }
 
-    private enum LastActiveButton
-    {
-        AllList,
-        ListCompleted,
-        ListActive
-    }
 
 }

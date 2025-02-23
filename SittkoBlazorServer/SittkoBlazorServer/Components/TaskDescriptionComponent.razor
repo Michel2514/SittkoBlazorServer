@@ -4,39 +4,38 @@
 @using SittkoBlazorServer.Interfaces
 @rendermode InteractiveServer
 @inject ITodoListService _servise
-
+@inject NavigationManager Navigation
 
 <h3>TaskDescriptionComponent</h3>
 
-<EditForm Model="@TodoItem" OnValidSubmit="OnValidSubmitt">
+<EditForm Model="@TodoItem" OnValidSubmit="ChangedSave">
     <DataAnnotationsValidator/>
-    <MudGrid>
-        <MudItem xs="12" sm="7">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" sm="7" >
             <MudCard>
                 <MudCardContent>
                     <MudStack Class="pa-4" Row="true">
-                        <MudCheckBox T="bool" Value="TodoItem.Completed"/>
+                        <MudCheckBox T="bool" @bind-Value="TodoItem.Completed"/>
                         <MudTextField @bind-Value="TodoItem.Name"
                                       For="@(() => TodoItem.Name)"
                                       HelperText="Задача"/>
-
                     </MudStack>
-                    <MudTextField T="DateTime?" Format="yyyy-MM-dd"
-                                  Value="TodoItem.CreationDate"
-                                  InputType="InputType.Date"
+                    <MudTextField T="DateTime?" Format="s"
+                                  Value="@TodoItem.CreationDate"
+                                  InputType="InputType.DateTimeLocal"
                                   HelperText="Дата создания"/>
-                    <MudTextField T="DateTime?" Format="yyyy-MM-dd"
+                    <MudTextField T="DateTime?" Format="s"
                                   Value="TodoItem.ExecutionDate"
                                   InputType="InputType.Date"
                                   HelperText="Дата закрытия"/>
-
                     <MudTextField T="string" Label="Добавить заметку" Lines="3"
-                                  Variant="Variant.Outlined" Text="@TodoItem.Description"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="@TodoItem.Description"
                                   Adornment="Adornment.End"
                                   AdornmentIcon="@Icons.Material.Filled.Api"/>
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Сохранить</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -54,9 +53,10 @@
 
     }
 
-    private void OnValidSubmitt()
+    private async Task ChangedSave()
     {
-
+        await _servise.TodoTaskUpdateAsync(TodoItem);
+        Navigation.NavigateTo("/");
     }
 
 }

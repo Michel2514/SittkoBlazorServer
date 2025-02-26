@@ -8,6 +8,8 @@
 
 <h3>TaskDescriptionComponent</h3>
 
+
+
 <EditForm Model="@TodoItem" OnValidSubmit="ChangedSave">
     <DataAnnotationsValidator/>
     <MudGrid Justify="Justify.Center">
@@ -20,14 +22,11 @@
                                       For="@(() => TodoItem.Name)"
                                       HelperText="Задача"/>
                     </MudStack>
-                    <MudTextField T="DateTime?" Format="s"
-                                  Value="@TodoItem.CreationDate"
-                                  InputType="InputType.DateTimeLocal"
+                    <MudDatePicker @bind-Date="CreationDate"
+                                   ReadOnly="true"
                                   HelperText="Дата создания"/>
-                    <MudTextField T="DateTime?" Format="s"
-                                  Value="TodoItem.ExecutionDate"
-                                  InputType="InputType.Date"
-                                  HelperText="Дата закрытия"/>
+                    <MudDatePicker @bind-Date="TodoItem.ExecutionDate" 
+                                   HelperText="Дата закрытия" />
                     <MudTextField T="string" Label="Добавить заметку" Lines="3"
                                   Variant="Variant.Outlined"
                                   @bind-Value="@TodoItem.Description"
@@ -41,16 +40,24 @@
         </MudItem>
     </MudGrid>
 </EditForm>
-
+@* 
+<MudTextField T="DateTime?" Format="s"
+              Value="@TodoItem.CreationDate"
+              InputType="InputType.DateTimeLocal"
+              HelperText="Дата создания"/>
+<MudTextField T="DateTime?" Format="s"
+              Value="TodoItem.ExecutionDate"
+              InputType="InputType.Date"
+              HelperText="Дата закрытия"/> *@
 
 @code{
     [Parameter] public string TodoItemId { get; set; } ="";
     [Parameter] public TodoItem TodoItem { get; set; } = new TodoItem();
-
+    private DateTime? CreationDate = new();
     protected override async Task OnInitializedAsync()
     {
         TodoItem = await _servise.TodoItemByIdAsync(Guid.Parse(TodoItemId));
-
+        CreationDate = TodoItem.CreationDate;
     }
 
     private async Task ChangedSave()

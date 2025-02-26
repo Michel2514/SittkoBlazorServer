@@ -7,9 +7,10 @@
     <MudStack StretchItems="@stretch" Row>
         <MudCheckBox @bind-Value="@TodoItem.Completed" @onclick="CompleteTask"></MudCheckBox>
         @* <MudTextField  disabled="true" @bind-Value="@TodoItem.Name"></MudTextField> *@
-        <MudButton OnClick="DescriptionGet" class="text-md-start">@TodoItem.Name</MudButton>
+        <MudButton Variant="Variant.Text" OnClick="DescriptionGet" Style="justify-content: flex-start;">@TodoItem.Name</MudButton>
         <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="Delete"/>
-    </MudStack>
+        
+        </MudStack>
 </MudPaper>
 
 

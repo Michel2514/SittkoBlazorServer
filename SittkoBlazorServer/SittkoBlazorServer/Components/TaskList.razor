@@ -10,30 +10,41 @@
             <MudCardContent Class="object-center">
                 <TodoListAdd OnAfterItemAdded="OnAfterAddedTaskItem"/>
                 <MudCardActions Class="align-center justify-center">
-                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
-                        <MudButton @onclick="AllList">Все</MudButton>
-                        <MudButton @onclick="ListCompleted">Выполненые</MudButton>
-                        <MudButton @onclick="ListActive">Активные</MudButton> 
-                        
-                    </MudButtonGroup>
+                    <MudToggleGroup T="LastActiveButton" SelectionMode="SelectionMode.SingleSelection" @bind-Value="lastActiveButton" Color="Color.Primary" CheckMark FixedContent>
+                        <MudToggleItem Value="@(LastActiveButton.AllList)">
+                            <MudButton @onclick="AllList">Все</MudButton>
+                        </MudToggleItem>
+                        <MudToggleItem Value="LastActiveButton.ListCompleted">
+                            <MudButton @onclick="ListCompleted">Выполненые</MudButton>
+                        </MudToggleItem>
+                        <MudToggleItem Value="@(LastActiveButton.ListActive)" >
+                            <MudButton @onclick="ListActive">Активные</MudButton> 
+                        </MudToggleItem>
+                    </MudToggleGroup>
                 </MudCardActions>
             </MudCardContent>
 
         </MudGrid>
-
-            <MudStack Class="align-center justify-center" Row="true">
-                <MudText Typo="Typo.h4" Class="re">Список задач</MudText>
-            @* <MudMenu Icon="@Icons.Material.Outlined.FilterAlt" AriaLabel="Open user menu">
-                    <MudMenuItem Label="Profile" />
-                    <MudMenuItem Label="My account" />
-                    <MudMenuItem Label="Logout" />
-                </MudMenu> *@
-            </MudStack>
-
+        <MudStack Class="align-center justify-center" Row="true">
+            <MudText Typo="Typo.h4" Class="re">Список задач</MudText>
+            <MudMenu Icon="@Icons.Material.Outlined.FilterAlt" AriaLabel="Open user menu">
+                <MudMenuItem>
+                    <MudIconButton Icon="@Icons.Material.Outlined.TextFormat" OnClick="SortAlphabetically" />
+                    <MudText Inline="true">По алфавиту</MudText>
+                </MudMenuItem>
+                <MudMenuItem>
+                    <MudIconButton Icon="@Icons.Material.Outlined.CalendarMonth" OnClick="SortExecutionDate" />
+                    <MudText Inline="true">По дате закрытия</MudText>
+                </MudMenuItem>
+                <MudMenuItem>
+                    <MudIconButton Icon="@Icons.Material.Outlined.CalendarToday" OnClick="SortCreationDate" />
+                    <MudText Inline="true">По дате закрытия</MudText>
+                </MudMenuItem>
+            </MudMenu>
+        </MudStack>
     </MudItem>
    
     <div>
-        
         <TodoList TodoItems="todoItemsFiltered"
                   TodoListService="_servise"
                   TaskListPage="taskListPage"
@@ -47,7 +58,6 @@
 @code {
     private List<TodoItem> todoItemsFiltered { get; set; } = new();
     [Parameter] public TaskList taskListPage { get; set; }
-
     private LastActiveButton lastActiveButton;
     private List<TodoItem> todoItems = new();
     private bool OrganizeTaskByDescendingAlphabetically;

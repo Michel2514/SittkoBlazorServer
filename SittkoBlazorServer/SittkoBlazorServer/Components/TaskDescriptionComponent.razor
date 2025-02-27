@@ -1,14 +1,9 @@
 ﻿@page "/TaskDescription/{TodoItemId}"
-
 @using SittkoBlazorServer.Data
 @using SittkoBlazorServer.Interfaces
 @rendermode InteractiveServer
 @inject ITodoListService _servise
 @inject NavigationManager Navigation
-
-<h3>TaskDescriptionComponent</h3>
-
-
 
 <EditForm Model="@TodoItem" OnValidSubmit="ChangedSave">
     <DataAnnotationsValidator/>

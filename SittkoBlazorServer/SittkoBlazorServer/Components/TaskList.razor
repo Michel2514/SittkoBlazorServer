@@ -60,7 +60,7 @@
         <TodoList TodoItems="todoItemsFiltered"
                   TodoListService="_servise"
                   TaskListPage="taskListPage"
-                  OnAfterItemChengeInStatus="OnAfterItemChangeInStatus"/>
+                  OnAfterItemChangeInStatus="OnAfterItemChangeInStatus"/>
     </div>
 </div>
 
@@ -87,8 +87,16 @@
         PageActive();
     }
 
-    private void OnAfterItemChangeInStatus(TodoItem val)
+    private async Task OnAfterItemChangeInStatus(TodoItem val)
     {
+        todoItems.Remove(val);
+        todoItems.Add(val);
+        if (val.Completed)
+            val.ExecutionDate = null;
+        else
+            val.ExecutionDate = DateTime.UtcNow;
+
+        await _servise.TodoTaskUpdateAsync(val);
         PageActive();
     }
 
@@ -208,6 +216,5 @@
     {
         Ascending,
         Descending
-        
     }
 }

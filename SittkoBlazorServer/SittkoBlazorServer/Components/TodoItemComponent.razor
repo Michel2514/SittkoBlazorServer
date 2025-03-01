@@ -5,12 +5,11 @@
 
 <MudPaper Class="pa-4 mud-theme-primary form-control">
     <MudStack StretchItems="@stretch" Row>
-        <MudCheckBox @bind-Value="@TodoItem.Completed" @onclick="CompleteTask"></MudCheckBox>
-        @* <MudTextField  disabled="true" @bind-Value="@TodoItem.Name"></MudTextField> *@
+        @* <MudCheckBox @bind-Value="TodoItem.Completed" @onclick="CompleteTask"></MudCheckBox> *@
+        <InputCheckbox @bind-Value="@TodoItem.Completed" @onclick="CompleteTask"></InputCheckbox>
         <MudButton Variant="Variant.Text" OnClick="DescriptionGet" Style="justify-content: flex-start;">@TodoItem.Name</MudButton>
         <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="Delete"/>
-        
-        </MudStack>
+    </MudStack>
 </MudPaper>
 
 
@@ -31,12 +30,6 @@
 
     public async Task CompleteTask()
     {
-        if (TodoItem.Completed)
-            TodoItem.ExecutionDate = null;
-        else
-            TodoItem.ExecutionDate = DateTime.UtcNow;
-
-        await TodoListService.TodoTaskUpdateAsync(TodoItem);
         await OnAfterItemChange.InvokeAsync(TodoItem);
     }
    
